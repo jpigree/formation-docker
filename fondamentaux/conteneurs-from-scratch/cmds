@@ -1,0 +1,156 @@
+#!/bin/bash
+
+bash
+
+TMP_DIR="$(mktemp -d)"
+
+cleanup() {
+    cd "$TMP_DIR"
+
+    sudo umount rootfs/{proc,dev,sys}
+    rm -rf rootfs && mkdir -p rootfs/
+
+    docker rm temp
+}
+
+cleanup
+
+# Récupération d'un rootfs debian bookworm
+cd "$TMP_DIR"
+mkdir -p rootfs
+CONTENEUR_ID="$(docker create --name temp ubuntu@sha256:c35e29c9450151419d9448b0fd75374fec4fff364a27f176fb458d472dfc9e54)"
+docker export $CONTENEUR_ID | tar -xpC rootfs/
+
+#######################
+# Montage du rootfs avec chroot
+#######################
+
+# Monte les répertoires spéciaux du kernel
+sudo mount -t proc /proc rootfs/proc/
+sudo mount -t sysfs /sys rootfs/sys/
+sudo mount -o bind /dev rootfs/dev/
+
+sudo chroot rootfs /bin/bash
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
+
+# DNS setup
+echo "nameserver 1.1.1.1" > /etc/resolv.conf
+
+# Installation des paquets nécessaires
+apt update && apt -y install pv iproute2 iputils-ping
+
+# Nous sommes bien dans une ubuntu mais...
+cat /etc/*-release
+
+# du coup, nous ne sommes pas isolé niveau process
+echo $$
+ps -ef
+
+ip addr
+
+HOSTNAME="$(hostname)"
+# Change le hostname sur l'hôte également
+hostname test
+# Remet le hostname précédent
+hostname $HOSTNAME
+
+exit
+
+# Le chroot nous permet d'utiliser le rootfs comme "/" mais ne nous isole pas.
+# Pour isoler le processus, nous avons besoin des Linux Namespaces.
+# Pour info, Docker utilise pivot_root plutôt que chroot car plus securisé.
+
+#######################
+# Linux Namespaces
+#######################
+
+# Lance un processus fils dans des Linux Namespaces séparés
+# Il en existe de plusieurs types pid, fork, network, uts, etc...
+sudo unshare --pid --fork --net --uts --mount-proc=rootfs/proc chroot rootfs /bin/bash
+
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
+
+# Nous somme dans le rootfs
+ls /
+cat /etc/*-release
+
+# Mais mieux isolés
+echo $$
+ps -ef
+
+ip addr
+ping 8.8.8.8
+
+hostname
+hostname test
+
+# Les namespaces dans le chroot
+ls -ltr "/proc/$$/ns" > /ns_chroot
+exit
+
+# Sur l'hôte
+ls -ltr "/proc/$$/ns" > ./ns_host
+vimdiff ./rootfs/ns_chroot ./ns_host
+
+# On est bien mieux isolé MAIS nous avons accès a toutes les ressources (CPU, RAM, IO, etc...) de l'hôte
+# Pour gérer cette partie, il existe les cgroups
+
+#######################
+# Cgroups
+#######################
+
+# Vérifier si le système est en cgroups v2 ou v1
+stat -fc %T /sys/fs/cgroup/
+
+# Les cgroups permette de hierarchiser et gérer les processus du système
+# Ceci est le cgroup root
+ls /sys/fs/cgroup/
+
+# Tout les processus du système sont dans un cgroup
+# Même votre shell
+CURR_CGROUP="$(cat /proc/$$/cgroup)"
+echo $CURR_CGROUP
+
+# On recrée notre pseudo conteneur en le créeant dans un cgroup dédié
+PARENT_PID="$$"
+sudo unshare --pid --fork --net --cgroup --uts --mount-proc=rootfs/proc chroot rootfs /bin/bash
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin
+
+# Ouvrir un deuxième shell
+
+# On retrouve le cgroup du pseudo conteneur
+CHILD_PID="$(pgrep -o -P "$PARENT_PID")"
+CURR_CGROUP="$(cat /proc/$CHILD_PID/cgroup)"
+echo $CURR_CGROUP
+CGROUP_PATH="$(echo $CURR_CGROUP | sed "s#0::#/sys/fs/cgroup#g")"
+echo $CGROUP_PATH
+
+# Dans chaque cgroup, il existe des fichiers qui permettent d'intéragir avec le kernel
+# Certains sont des entrées d'autres des sorties
+cd "$CGROUP_PATH"
+ls
+
+# Limite la conso mémoire du process a 15 MB
+echo "15000000" | sudo tee memory.max
+cat memory.max
+
+# Désactive le swap
+echo "0" | sudo tee memory.swap.max
+cat memory.swap.max
+
+# Surveillance de la mémoire dans le cgroup
+watch -d -n1 'echo "$(cat ./memory.current) / 1000000" | bc'
+
+
+# Test de la limite (dans le pseudo conteneur)
+# Remplissage de la mémoire a 1mb/s jusqu'a 10mb
+head -c 15m /dev/zero | pv -b -L 1m | tail > /dev/null
+
+# OOMKIll du conteneur ou du processus fils
+
+# BONUS
+# Un pseudo docker en bash
+./pseudo-ctr ls
+./pseudo-ctr bash
+
+cleanup

@@ -1,0 +1,48 @@
+#!/bin/bash -e
+
+PARENT_DIR="$(readlink -f "$0" | xargs dirname)"
+ROOTFS="$PARENT_DIR/rootfs"
+TMP_DIR="$(mktemp -d)"
+CGROUP_DIR="/sys/fs/cgroup/pseudo-ctr"
+
+cleanup() {
+    cd "$TMP_DIR"
+
+    sudo umount rootfs/{proc,dev,sys} || true
+    sudo rmdir "$CGROUP_DIR" || true
+    rm -rf rootfs
+
+    docker rm temp || true
+}
+
+cleanup &>/dev/null
+
+trap "cleanup &>/dev/null" EXIT SIGHUP SIGABRT SIGINT SIGKILL
+
+cd "$TMP_DIR"
+mkdir -p rootfs
+CONTENEUR_ID="$(docker create --name temp ubuntu@sha256:c35e29c9450151419d9448b0fd75374fec4fff364a27f176fb458d472dfc9e54)"
+docker export $CONTENEUR_ID | tar -xpC rootfs/
+
+sudo mount -t proc /proc rootfs/proc/
+sudo mount -t sysfs /sys rootfs/sys/
+sudo mount -o bind /dev rootfs/dev/
+
+# DNS setup
+echo "nameserver 1.1.1.1" > rootfs/etc/resolv.conf
+
+# Recréation du cgroup
+sudo mkdir -p "$CGROUP_DIR"
+
+# Limite la conso mémoire du process a 15 MB
+echo "15000000" | sudo tee "$CGROUP_DIR/memory.max" &>/dev/null
+
+# Désactive le swap
+echo "0" | sudo tee "$CGROUP_DIR/memory.swap.max" &>/dev/null
+
+# Change le process actuel de cgroup et le met dans le cgroupe CGROUP_DIR
+echo "$$" | sudo tee -a "$CGROUP_DIR/cgroup.procs" &>/dev/null
+
+# Lancer le process dans un pseudo-conteneur
+cp $PARENT_DIR/entrypoint.sh "$TMP_DIR"
+sudo unshare --pid --fork --net --cgroup --uts --mount-proc=rootfs/proc ./entrypoint.sh $@
