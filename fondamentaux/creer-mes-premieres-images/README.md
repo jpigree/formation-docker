@@ -19,13 +19,13 @@ Créer une image Docker minimale et comprendre la relation entre Dockerfile, ima
 #### 1. Consulter le Dockerfile suivant.
 Lire le Dockerfile se trouvant dans `formation-docker/fondamentaux/créer-mes-premières-images/simple-exemple`. 
 
-#### 3. Construire l’image
+#### 2. Construire l’image
 ```bash
 cd simple-exemple
 docker build -t hello-docker .
 ```
 
-#### 4. Lancer un conteneur à partir de l'image
+#### 3. Lancer un conteneur à partir de l'image
 ```bash
 # --rm supprime le conteneur automatiquement dès qu'il se termine
 docker run --rm hello-docker
@@ -50,26 +50,26 @@ L'application se trouve dans `formation-docker/fondamentaux/créer-mes-première
 - sur quel port elle écoute
 - comment la lancer
 
-#### 3. Créer le Dockerfile
+#### 2. Créer le Dockerfile
 Créer le Dockerfile qui permet de lancer cette application dans un conteneur.
 
-#### 4. Construire l’image
+#### 3. Construire l’image
 ```bash
 docker build -t docker-helloworld .
 ```
 
-#### 5. Lancer le conteneur
+#### 4. Lancer le conteneur
 ```bash
 docker run --name helloworld docker-helloworld
 ```
 
-#### 6. Tester l’application
+#### 5. Tester l’application
 ```bash
 docker exec -it helloworld curl http://localhost:5000
 docker logs -f helloworld
 ```
 
-#### 7. Arrêter l'application
+#### 6. Arrêter l'application
 ```bash
 docker stop helloworld
 ```

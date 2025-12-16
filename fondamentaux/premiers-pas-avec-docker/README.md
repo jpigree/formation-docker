@@ -142,7 +142,7 @@ docker run -it ubuntu:26.04
 
 #### 4 Créer un fichier "test" dans le conteneur à partir du shell précédent.
 ```shell
-$ echo "test" > /test
+echo "test" > /test
 ```
 
 #### 5 Arrêter le shell
@@ -157,7 +157,7 @@ docker ps --filter=ancestor=ubuntu:26.04 -q | xargs -r docker kill
 
 Afficher les conteneurs arrếtés
 ```shell
-$ docker ps -a
+docker ps -a
 ```
 
 #### 5 Créer un nouveau conteneur à partir de la même image. Le fichier existe t'il toujours? 
@@ -167,15 +167,15 @@ Non, car la commande "docker run" a crée un nouveau conteneur.
 Pour retrouver le fichier "test", il faut relancer le conteneur précédent.
 
 ```bash
-$ docker run -it ubuntu:26.04
-$ cat /test
+docker run -it ubuntu:26.04
+cat /test
 cat: /test: No such file or directory (os error 2)
 ```
 
 Pour retrouver le fichier, il faut relancer le conteneur précédent:
 ```bash
-$ docker start "$UBUNTU_CONTAINER_ID"
-$ cat /test
+docker start "$UBUNTU_CONTAINER_ID"
+cat /test
 test
 ```
 
