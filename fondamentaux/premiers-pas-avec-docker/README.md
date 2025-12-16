@@ -131,7 +131,7 @@ docker pull ubuntu:26.04
 <summary>Solution</summary>
 
 ```shell
-# L'image s'arrête immédiatement parce qu'elle lance un shell sans tty.
+# L'image s'arrête immédiatement parce qu'elle lance un shell non intéractif sans tty.
 docker run ubuntu:26.04
 
 # Pour lancer un conteneur intéractif avec tty
