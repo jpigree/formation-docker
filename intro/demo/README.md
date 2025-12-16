@@ -1,30 +1,30 @@
 # Démonstration
 
-# Objectif
+## Objectif
 Démontrer l'intérêt de la conteneurisation Docker.
 
-# Etapes
+## Etapes
 
-- Lancer l'application d'exemple
+#### 1. Lancer l'application d'exemple
 
-```sh
-$ cd spring-postgres
-$ docker compose up -d
+```bash
+cd spring-postgres
+docker compose up -d
 ```
 
-- Vérifier que tout les services sont bien lancés
-```sh
-$ docker stats
+#### 2. Vérifier que tout les services sont bien lancés
+```bash
+docker stats
 ```
 
-- Tester l'application lancée
+#### 3. Tester l'application lancée
 
-```sh
-$ curl http://127.0.0.1:8080
+```bash
+curl http://127.0.0.1:8080
 ```
 
-- Supprimer l'application lancée
+#### 4. Supprimer l'application lancée
 
-```sh
-$ docker compose down -v
+```bash
+docker compose down -v
 ```
