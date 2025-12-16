@@ -29,7 +29,7 @@ newgrp docker
 
 #### 4. Lancer votre premier conteneur
 ```bash
-docker run helloworld --name helloworld
+docker run  --name helloworld hello-world
 ```
 
 #### 5. Vérifier l'état du conteneur
@@ -51,16 +51,19 @@ $ docker inspect helloworld
 ### Objectif
 Se familiariser avec Docker.
 
-#### 1 Démarrer un conteneur Nginx
+#### 1 Démarrer un conteneur Nginx en mode détaché
 ```bash
-docker run nginx:latest --name mon-nginx
+docker run -d --name mon-nginx nginx:latest 
 ```
 
 #### 2 Inspecter le conteneur crée
 Pour démarrer un conteneur Nginx, Docker a d'abord récupéré l'image depuis le registre Dockerhub
 
 ```bash
-docker images --filter=reference=nginx --no-trunc  
+# Affiche l'état du conteneur
+docker inspect mon-nginx
+# Affiche les logs du conteneur
+docker logs mon-nginx
 ```
 
 #### 3 Récupérer une image depuis un registre différent
@@ -81,12 +84,14 @@ On verra comment faire dans la prochaine partie théorique.
 Lancer un shell dans le conteneur "mon-nginx".
 ```bash
 docker exec -it mon-nginx bash
+curl http://localhost:80
 # Arrêter le shell (ctrl-c)
 ```
 
 #### 5 Supprimer le conteneur
 ```bash
 docker stop mon-nginx
+docker rm mon-nginx
 ```
 
 ### À observer
@@ -125,7 +130,7 @@ docker pull ubuntu:26.04
 
 </details>
 
-#### 3 Créer un un shell dans un conteneur
+#### 3 Créer un un shell intéractif dans un conteneur
 - Créer le conteneur à partir de l'image. Il lancera un shell par défaut.
 <details>
 <summary>Solution</summary>
@@ -148,7 +153,6 @@ echo "test" > /test
 #### 5 Arrêter le shell
 Noter l'id du conteneur puis arrêter le (ctrl-c dans le shell ou via docker stop)
 ```bash
-UBUNTU_CONTAINER_ID="$(docker ps --filter=ancestor=ubuntu:26.04 -qa | head -n 1)"
 # docker stop = SIGTERM
 docker ps --filter=ancestor=ubuntu:26.04 -q | xargs -r docker stop
 # docker stop = SIGKILL
