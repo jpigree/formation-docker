@@ -7,8 +7,7 @@ Le but de ce TP est d'orchestrer plusieurs conteneurs en utilisant Docker Compos
 ## TP 1 – Orchestrer une application
 
 ### Objectif
-Créer un fichier compose pour une application et son cache `redis`.
-
+Créer un fichier compose pour une application Python et son cache `redis`.
 
 ### Étapes
 
@@ -27,9 +26,10 @@ Le conteneur redis doit utilisé l'image `redis:alpine`.
 <details>
 <summary>Solution</summary>
 ```yaml
+# formation-docker/orchestration/orchestrer-une-application/compose.yaml
 services:
   web:
-    build: .
+    build: ./app
     ports:
       - "8000:5000"
   redis:
