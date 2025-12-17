@@ -16,10 +16,12 @@ Lancer un Nginx avec le port 80 et le fichier index.html accessibles depuis l'h�
 #### 1. Lancer un conteneur Nginx (mainline) avec son port 80 exposé sur le port 3333 de l'hôte 
 <details>
 <summary>Solution</summary>
+
 ```bash
 # On expose Nginx sur le port 3333 car il n'est pas protégé comme le port 80.
 docker run --rm -p 3333:80 --name nginx nginx:mainline    
 ```
+
 </details>
 
 
@@ -28,9 +30,11 @@ Pour ce faire, il faut analyser le conteneur ou lire la documentation sur Docker
 
 <details>
 <summary>Solution</summary>
+
 ```bash
 docker run --rm -p 3333:80 --name nginx --volume /tmp/data/nginx:/usr/share/nginx/html nginx:mainline
 ```
+
 </details>
 
 
@@ -44,14 +48,17 @@ curl http://127.0.0.1:3333
 #### 4. Modifier le fichier index.html et vérifier que le changement est bien pris en compte
 Remplacer le contenu du fichier "index.html" par "Je suis modifiable!".
 Vérifier par curl ou un navigateur que la page a bien été modifiée.
-compte Remplacer le contenu du fichier "index.html" par "Je suis modifiable!". Vérifier par curl ou un navigateur que la page a bien été modifiée.  <details> <summary>Solution</summary> ```
+compte Remplacer le contenu du fichier "index.html" par "Je suis modifiable!". Vérifier par curl ou un navigateur que la page a bien été modifiée.
+
 <details>
 <summary>Solution</summary>
+
 ```bash
 echo "Je suis modifiable!" > /tmp/data/nginx/index.html
 # Sur l'hôte
 curl http://127.0.0.1:3333
 ```
+
 </details>
 
 ## Nettoyage
@@ -89,9 +96,11 @@ Vous pouvez vous servir de la documentation de l'image officielle sur Dockerhub.
 
 <details>
 <summary>Solution</summary>
+
 ```bash
 docker run --name postgres -e POSTGRES_PASSWORD=-formation- -e POSTGRES_USER=formation -e POSTGRES_DB=formation -p 5432 -v ./db:/var/lib/postgresql -d postgres:16
 ```
+
 </details>
 
 
@@ -114,14 +123,17 @@ curl http://127.0.0.1:3333
 #### 4. Modifier le fichier index.html et vérifier que le changement est bien pris en compte
 Remplacer le contenu du fichier "index.html" par "Je suis modifiable!".
 Vérifier par curl ou un navigateur que la page a bien été modifiée.
-compte Remplacer le contenu du fichier "index.html" par "Je suis modifiable!". Vérifier par curl ou un navigateur que la page a bien été modifiée.  <details> <summary>Solution</summary> ```
+compte Remplacer le contenu du fichier "index.html" par "Je suis modifiable!". Vérifier par curl ou un navigateur que la page a bien été modifiée. 
+
 <details>
 <summary>Solution</summary>
+
 ```bash
 echo "Je suis modifiable!" > /tmp/data/nginx/index.html
 # Sur l'hôte
 curl http://127.0.0.1:3333
 ```
+
 </details>
 
 ## Nettoyage
