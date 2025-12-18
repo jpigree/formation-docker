@@ -16,16 +16,24 @@ Créer une image Docker minimale et comprendre la relation entre Dockerfile, ima
 
 ### Étapes
 
-#### 1. Consulter le Dockerfile suivant.
+#### 1. Clôner le dépôt.
+
+```bash
+git clone https://github.com/jpigree/formation-docker
+cd formation-docker
+```
+
+#### 2. Consulter le Dockerfile suivant.
 Lire le Dockerfile se trouvant dans `formation-docker/fondamentaux/créer-mes-premières-images/simple-exemple`. 
 
-#### 2. Construire l’image
+#### 3. Construire l’image
+
 ```bash
 cd simple-exemple
 docker build -t hello-docker .
 ```
 
-#### 3. Lancer un conteneur à partir de l'image
+#### 4. Lancer un conteneur à partir de l'image
 ```bash
 # --rm supprime le conteneur automatiquement dès qu'il se termine
 docker run --rm hello-docker

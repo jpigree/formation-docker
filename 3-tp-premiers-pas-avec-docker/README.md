@@ -11,7 +11,7 @@ Installer Docker sur votre poste.
 
 ### Étapes
 
-#### 1. Installer Docker
+#### 1. Installer Docker (si ce n'est pas déjà fait)
 Outil en ligne de commande: https://docs.docker.com/engine/install/
 
 **IMPORTANT** *N'oublier pas de rajouter votre utilisateur dans le groupe "docker". Cela vous permettra de ne plus avoir a passer en root/sudo pour chaque commande Docker.*
@@ -22,12 +22,12 @@ Desktop: https://docs.docker.com/get-started/introduction/get-docker-desktop/
 ```bash
 # Permet d'utiliser Docker sans passer par sudo
 # Effectif qu'après s'être déconnecté puis reconnecté a votre compte
-sudo usermod $USER -aG docker 
+sudo usermod $USER -aG docker
 # Utiliser newgrp pour le rendre effectif dans votre shell local sans vous déconnecter
 newgrp docker
 ```
 
-#### 4. Lancer votre premier conteneur
+#### 3. Lancer votre premier conteneur
 ```bash
 docker run  --name helloworld hello-world
 ```
@@ -53,7 +53,7 @@ Se familiariser avec Docker.
 
 #### 1 Démarrer un conteneur Nginx en mode détaché
 ```bash
-docker run -d --name mon-nginx nginx:latest 
+docker run -d --name mon-nginx nginx:latest
 ```
 
 #### 2 Inspecter le conteneur crée
@@ -83,6 +83,7 @@ On verra comment faire dans la prochaine partie théorique.
 
 Lancer un shell dans le conteneur "mon-nginx".
 ```bash
+# Lance un shell dans le conteneur mon-nginx
 docker exec -it mon-nginx bash
 curl http://localhost:80
 # Arrêter le shell (ctrl-c)
@@ -90,7 +91,9 @@ curl http://localhost:80
 
 #### 5 Supprimer le conteneur
 ```bash
+# Arrête le conteneur
 docker stop mon-nginx
+# Supprime le conteneur
 docker rm mon-nginx
 ```
 
@@ -102,24 +105,40 @@ docker rm mon-nginx
 
 ## TP 3 – Exercices un peu plus poussés
 
-#### 1 Trouver une image Postgres sur Dockerhub
-Lien: https://hub.docker.com/
+#### 1 Analyser une image Postgres sur Dockerhub
+Trouver une image officielle Postgres 16 sur [Dockerhub](https://hub.docker.com/).
 
 **!!!IMPORTANT!!!**
 *Privilégier les images officielles (vérifier le badge et le mainteneur). Des images vérolées existent sur les dépôts publics.*
 
-- Il existe plusieurs versions officielles:
-    - https://hub.docker.com/_/postgres
-    - La plupart des projets opensource publient des images sur des distributions différentes:
-        - postgres:18-bookworm (postgres sur debian bookworm)
-        - postgres:alpine (postgres sur alpine, un OS minimaliste)
-    - Egalement, les projets proposent des tags versions différents:
-        - 18, un tag qui correspond a la dernière version 18 publiée (patch le plus récent). A chaque publication d'un nouveau patch, cette image est écrasée par la plus récente.
-        - 18.1, un tag fixe qui correspond a la version 18.1.
+Il existe plusieurs versions officielles:
+- https://hub.docker.com/_/postgres
+- La plupart des projets opensource publient des images sur des distributions différentes:
+    - postgres:18-bookworm (postgres sur debian bookworm)
+    - postgres:alpine (postgres sur alpine, un OS minimaliste)
+- Egalement, les projets proposent des tags versions différents:
+    - 18, un tag qui correspond a la dernière version 18 publiée (patch le plus récent). A chaque publication d'un nouveau patch, cette image est écrasée par la plus récente.
+    - 18.1, un tag fixe qui correspond a la version 18.1.
 
 *Prendre le temps de lire la page sur Dockerhub décrivant comment utiliser les images.*
 
-#### 2 Télécharger l'image ubuntu:26.04
+#### 2 Lancer un conteneur à partir de l'image postgres trouvée
+Lancer un conteneur Postgres 16.
+
+<details>
+<summary>Solution</summary>
+
+```shell
+# --rm supprime le conteneur automatiquement quand il s'arrête
+docker run --rm postgres:16
+```
+
+</details>
+
+
+
+
+#### 3 Télécharger l'image ubuntu:26.04
 Télécharger l'image ubuntu:26.04
 <details>
 <summary>Solution</summary>
@@ -130,7 +149,7 @@ docker pull ubuntu:26.04
 
 </details>
 
-#### 3 Créer un un shell intéractif dans un conteneur
+#### 4 Créer un un shell intéractif dans un conteneur
 - Créer le conteneur à partir de l'image. Il lancera un shell par défaut.
 <details>
 <summary>Solution</summary>
@@ -145,12 +164,12 @@ docker run -it ubuntu:26.04
 
 </details>
 
-#### 4 Créer un fichier "test" dans le conteneur à partir du shell précédent.
+#### 5 Créer un fichier "test" dans le conteneur à partir du shell précédent.
 ```shell
 echo "test" > /test
 ```
 
-#### 5 Arrêter le shell
+#### 6 Arrêter le shell
 Noter l'id du conteneur puis arrêter le (ctrl-c dans le shell ou via docker stop)
 ```bash
 # docker stop = SIGTERM
@@ -164,7 +183,7 @@ Afficher les conteneurs arrếtés
 docker ps -a
 ```
 
-#### 5 Créer un nouveau conteneur à partir de la même image. Le fichier existe t'il toujours? 
+#### 7 Créer un nouveau conteneur à partir de la même image. Le fichier existe t'il toujours?
 <details>
 <summary>Solution</summary>
 Non, car la commande "docker run" a crée un nouveau conteneur.
@@ -186,7 +205,7 @@ test
 **!!!IMPORTANT!!!** *Il est vivement déconseillé de stocker des fichiers persistants dans des conteneurs. Utiliser plutôt des montages de volumes.*
 </details>
 
-#### 6 Nettoyer
+#### 8 Nettoyer
 - Arrêter le conteneur précédent et nettoyer.
 ```bash
 docker ps --filter=ancestor=ubuntu:26.04 -q | xargs -r docker stop

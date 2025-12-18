@@ -10,20 +10,24 @@ Le but de ce TP est d'orchestrer plusieurs conteneurs en utilisant Docker Swarm.
 Reprendre le fichier compose de l'exercice "orchestrer-une-application" et le rendre compatible Swarm.
 ### Étapes
 
-#### 1. Construire l'image "app" en la nommant "swarm-app:1.0"
+#### 1. Clôner le dépôt.
+
+```bash
+git clone https://github.com/jpigree/formation-docker
+cd formation-docker
+```
+
+#### 2. Construire l'image "app" en la nommant "swarm-app:1.0"
 La construction des images de compose n'est pas compatible avec Swarm.
 ```bash
 cd orchestrer-une-application-sur-swarm/app
 docker build . -t swarm-app:1.0
 ```
 
-#### 2. Remplacer le champ "build" de l'app par "image"
+#### 3. Remplacer le champ "build" de l'app par "image"
 En utilisant l'image que vous avez généré précédemment.
-```
 
-```
-
-#### 2. Rajouter le champ "deploy"
+#### 4. Rajouter le champ "deploy"
 Le champ `deploy` est spécifique Swarm. Rajoutez le pavé de code suivant sur chacuns des services.
 
 ```bash
@@ -38,7 +42,7 @@ Le champ `deploy` est spécifique Swarm. Rajoutez le pavé de code suivant sur c
         memory: 128Mi
 ```
 
-#### 3. Initialiser votre Swarm
+#### 5. Initialiser votre Swarm
 Pour que votre machine puisse être un Swarm, il faut l'initialiser.
 ```bash
 docker swarm init
@@ -46,14 +50,13 @@ docker swarm init
 docker node ls
 ```
 
-
-#### 3. Démarrer votre pile logicielle
+#### 6. Démarrer votre pile logicielle
 ```bash
 cd orchestrer-une-application-sur-swarm
 docker stack deploy -c ./compose.yaml app
 ```
 
-#### 4. Tester l'application déployée
+#### 7. Tester l'application déployée
 ```bash
 curl http://localhost:8000/
 ```

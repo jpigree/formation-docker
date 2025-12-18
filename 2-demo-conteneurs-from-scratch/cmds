@@ -150,7 +150,7 @@ head -c 15m /dev/zero | pv -b -L 1m | tail > /dev/null
 
 # BONUS
 # Un pseudo docker en bash
-./pseudo-ctr ls
-./pseudo-ctr bash
+./pseudo-ubuntu-ctr ls
+./pseudo-ubuntu-ctr bash
 
 cleanup
