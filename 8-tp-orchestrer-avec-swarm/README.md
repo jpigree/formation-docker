@@ -37,9 +37,10 @@ Le champ `deploy` est spécifique Swarm. Rajoutez le pavé de code suivant sur c
       mode: replicated
       replicas: 1
       # Défini les ressources de l'application
-      ressources:
-        cpu: 0.5
-        memory: 128Mi
+      resources:
+        reservations:
+          cpus: "0.5"
+          memory: 128M
 ```
 
 #### 5. Initialiser votre Swarm
