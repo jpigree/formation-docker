@@ -15,11 +15,11 @@ Créer un fichier compose pour une application Python et son cache `redis`.
 
 ```bash
 git clone https://github.com/jpigree/formation-docker
-cd formation-docker
+cd formation-docker/7-tp-orchestrer-avec-compose
 ```
 
 #### 2. Analyser l'application à orchestrer 
-Une application est disponible dans le répertoire `formation-docker/orchestration/orchestrer-une-application/app`.
+Une application est disponible dans le répertoire `app`.
 
 Il consiste en une application Python et un cache redis. Le Dockerfile est déjà écrit dans le répertoire app.
 
@@ -47,7 +47,7 @@ services:
 
 #### 4. Démarrer votre pile logicielle
 ```bash
-cd orchestrer-une-application
+cd 7-tp-orchestrer-avec-compose
 docker compose up
 ```
 
@@ -59,7 +59,7 @@ curl http://localhost:8000/
 ## Nettoyage
 - Nettoyer
 ```bash
-cd orchestrer-une-application
+cd 7-tp-orchestrer-avec-compose
 docker compose down -v
 ```
 
