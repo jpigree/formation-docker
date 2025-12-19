@@ -24,7 +24,7 @@ cd formation-docker
 ```
 
 #### 2. Consulter le Dockerfile suivant.
-Lire le Dockerfile se trouvant dans `formation-docker/fondamentaux/créer-mes-premières-images/simple-exemple`. 
+Lire le Dockerfile se trouvant dans `simple-exemple`. 
 
 #### 3. Construire l’image
 
@@ -53,7 +53,8 @@ Créer une image Docker pour une application réelle puis l'utiliser.
 ### Étapes
 
 #### 1. Analyser l’application
-L'application se trouve dans `formation-docker/fondamentaux/créer-mes-premières-images/docker-helloworld`. Identifier en lisant son README.md:
+L'application se trouve dans `docker-helloworld`. 
+Identifier en lisant son README.md:
 - comment installer l'application
 - sur quel port elle écoute
 - comment la lancer
@@ -96,7 +97,7 @@ Mettre en évidence le problème du PID 1.
 ### Étapes
 
 #### 1. Consulter un Dockerfile problématique
-Consulter le Dockerfile situé dans `formation-docker/fondamentaux/créer-mes-premières-images/pid1`.
+Consulter le Dockerfile situé dans `pid1`.
 
 #### 2. Construire l’image associée
 ```bash

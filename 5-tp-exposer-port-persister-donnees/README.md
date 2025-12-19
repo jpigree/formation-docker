@@ -110,32 +110,6 @@ docker run --name postgres -e POSTGRES_PASSWORD=-formation- -e POSTGRES_USER=for
 docker exec -it postgres psql --host=127.0.0.1  -p 5432 -U formation -d formation
 # Test du port sur l'hôte
 
-```
-
-
-#### 3. Accéder au conteneur Nginx
-Via curl ou directement avec un navigateur web.
-```bash
-# Sur l'hôte
-curl http://127.0.0.1:3333
-```
-
-#### 4. Modifier le fichier index.html et vérifier que le changement est bien pris en compte
-Remplacer le contenu du fichier "index.html" par "Je suis modifiable!".
-Vérifier par curl ou un navigateur que la page a bien été modifiée.
-compte Remplacer le contenu du fichier "index.html" par "Je suis modifiable!". Vérifier par curl ou un navigateur que la page a bien été modifiée. 
-
-<details>
-<summary>Solution</summary>
-
-```bash
-echo "Je suis modifiable!" > /tmp/data/nginx/index.html
-# Sur l'hôte
-curl http://127.0.0.1:3333
-```
-
-</details>
-
 ## Nettoyage
 - Nettoyer
 ```shell
